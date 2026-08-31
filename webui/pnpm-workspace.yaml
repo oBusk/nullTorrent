@@ -1,0 +1,2 @@
+configDependencies:
+  '@obusk/pnpm-plugin-defaults': 0.6.4

@@ -3,6 +3,7 @@ package webserver
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net"
 	"net/http"
 
@@ -12,10 +13,12 @@ import (
 )
 
 func Serve(t *torrent.Torrent) error {
+	dist, err := fs.Sub(distFS, "dist")
+	if err != nil {
+		return err
+	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "index.html")
-	})
+	http.Handle("/", http.FileServer(http.FS(dist)))
 
 	http.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

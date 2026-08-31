@@ -38,6 +38,10 @@ CLAUDE.local.md
 
 # Project specific
 
+# Frontend dependencies and build output
+node_modules/
+/internal/webserver/dist/
+
 # Executable
 /nullTorrent
 
