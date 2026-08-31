@@ -3,12 +3,13 @@ package webserver
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 
 	"github.com/anacrolix/torrent"
 )
 
-func Serve(t *torrent.Torrent) {
+func Serve(t *torrent.Torrent) error {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "index.html")
@@ -31,6 +32,12 @@ func Serve(t *torrent.Torrent) {
 	})
 
 	port := ":8080"
-	go http.ListenAndServe(port, nil)
+	ln, err := net.Listen("tcp", port)
+	if err != nil {
+		return err
+	}
+
 	fmt.Println("Server started at http://localhost" + port)
+
+	return http.Serve(ln, nil)
 }

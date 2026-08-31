@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/oBusk/nullTorrent/internal/memstorage"
@@ -54,7 +55,8 @@ func main() {
 	// }
 
 	go printProgress(t)
-	go webserver.Serve(t)
 
-	select {}
+	if err := webserver.Serve(t); err != nil {
+		log.Fatal(err)
+	}
 }
