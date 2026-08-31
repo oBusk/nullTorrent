@@ -2,11 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/anacrolix/torrent"
+	"github.com/anacrolix/torrent/storage"
 )
 
 func printProgress(t *torrent.Torrent) {
@@ -50,8 +52,17 @@ func serveStatus(t *torrent.Torrent) {
 }
 
 func main() {
+	inMemory := flag.Bool("memory", false, "keep downloaded data in memory instead of on disk")
+	dataDir := flag.String("data-dir", "downloads", "directory to write downloaded data to")
+	flag.Parse()
+
 	cfg := torrent.NewDefaultClientConfig()
-	cfg.DataDir = "./downloads"
+	if *inMemory {
+		cfg.DefaultStorage = newMemoryStorage()
+	} else {
+		cfg.DataDir = *dataDir
+		cfg.DefaultStorage = storage.NewFile(*dataDir)
+	}
 
 	client, _ := torrent.NewClient(cfg)
 	defer client.Close()
