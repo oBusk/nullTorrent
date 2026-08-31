@@ -1,4 +1,4 @@
-module nullTorrent
+module github.com/oBusk/nullTorrent
 
 go 1.26.5
 

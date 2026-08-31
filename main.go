@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"nullTorrent/internal/memstorage"
-	"nullTorrent/internal/webserver"
+	"github.com/oBusk/nullTorrent/internal/memstorage"
+	"github.com/oBusk/nullTorrent/internal/webserver"
 
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/storage"
