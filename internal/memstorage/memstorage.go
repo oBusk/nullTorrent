@@ -1,4 +1,4 @@
-package main
+package memstorage
 
 import (
 	"context"
@@ -44,7 +44,7 @@ func (p *memPiece) Completion() storage.Completion {
 
 type memStorage struct{}
 
-func newMemoryStorage() storage.ClientImpl {
+func New() storage.ClientImpl {
 	return memStorage{}
 }
 

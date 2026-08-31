@@ -1,11 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"net/http"
 	"time"
+
+	"nullTorrent/internal/memstorage"
+	"nullTorrent/internal/webserver"
 
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/storage"
@@ -24,33 +25,6 @@ func printProgress(t *torrent.Torrent) {
 	}
 }
 
-func serveStatus(t *torrent.Torrent) {
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "index.html")
-	})
-
-	http.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
-		stats := t.Stats()
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(struct {
-			BytesCompleted int64 `json:"bytesCompleted"`
-			Length         int64 `json:"length"`
-			ActivePeers    int   `json:"activePeers"`
-			Seeders        int   `json:"seeders"`
-		}{
-			BytesCompleted: t.BytesCompleted(),
-			Length:         t.Length(),
-			ActivePeers:    stats.ActivePeers,
-			Seeders:        stats.ConnectedSeeders,
-		})
-	})
-
-	port := ":8080"
-	go http.ListenAndServe(port, nil)
-	fmt.Println("Server started at http://localhost" + port)
-}
-
 func main() {
 	inMemory := flag.Bool("memory", false, "keep downloaded data in memory instead of on disk")
 	dataDir := flag.String("data-dir", "downloads", "directory to write downloaded data to")
@@ -58,7 +32,7 @@ func main() {
 
 	cfg := torrent.NewDefaultClientConfig()
 	if *inMemory {
-		cfg.DefaultStorage = newMemoryStorage()
+		cfg.DefaultStorage = memstorage.New()
 	} else {
 		cfg.DataDir = *dataDir
 		cfg.DefaultStorage = storage.NewFile(*dataDir)
@@ -80,7 +54,7 @@ func main() {
 	// }
 
 	go printProgress(t)
-	go serveStatus(t)
+	go webserver.Serve(t)
 
 	select {}
 }
