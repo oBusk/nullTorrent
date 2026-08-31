@@ -1,5 +1,5 @@
 {
-  "name": "@nulltorrent/webui",
+  "name": "@nulltorrent/nulltorrent",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -17,11 +17,11 @@
     }
   },
   "scripts": {
-    "dev": "vite --open",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "pnpm --dir webui build && go build -o nullTorrent .",
+    "start": "pnpm build && ./nullTorrent",
+    "dev": "concurrently -n web,go -c cyan,green \"pnpm --dir webui dev\" \"go run .\""
   },
   "devDependencies": {
-    "vite": "^8.2.2"
+    "concurrently": "^10.0.5"
   }
 }

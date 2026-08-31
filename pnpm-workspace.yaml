@@ -1,0 +1,5 @@
+configDependencies:
+  "@obusk/pnpm-plugin-defaults": latest
+
+packages:
+  - "webui"
