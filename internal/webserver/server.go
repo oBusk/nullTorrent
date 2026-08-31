@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	"github.com/anacrolix/torrent"
+
+	"github.com/oBusk/nullTorrent/internal/status"
 )
 
 func Serve(t *torrent.Torrent) error {
@@ -16,19 +18,8 @@ func Serve(t *torrent.Torrent) error {
 	})
 
 	http.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
-		stats := t.Stats()
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(struct {
-			BytesCompleted int64 `json:"bytesCompleted"`
-			Length         int64 `json:"length"`
-			ActivePeers    int   `json:"activePeers"`
-			Seeders        int   `json:"seeders"`
-		}{
-			BytesCompleted: t.BytesCompleted(),
-			Length:         t.Length(),
-			ActivePeers:    stats.ActivePeers,
-			Seeders:        stats.ConnectedSeeders,
-		})
+		json.NewEncoder(w).Encode(status.Of(t))
 	})
 
 	port := ":8080"

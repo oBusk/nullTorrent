@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/oBusk/nullTorrent/internal/memstorage"
+	"github.com/oBusk/nullTorrent/internal/status"
 	"github.com/oBusk/nullTorrent/internal/webserver"
 
 	"github.com/anacrolix/torrent"
@@ -14,15 +15,15 @@ import (
 )
 
 func printProgress(t *torrent.Torrent) {
-	lastStats := t.Stats()
+	last := status.Of(t)
 	for {
 		time.Sleep(time.Second)
 
-		stats := t.Stats()
-		rate := stats.BytesReadUsefulData.Int64() - lastStats.BytesReadUsefulData.Int64()
-		lastStats = stats
+		s := status.Of(t)
+		rate := s.BytesRead - last.BytesRead
+		last = s
 
-		fmt.Println(t.BytesCompleted(), "/", t.Length(), "-", rate, "B/s -", stats.ActivePeers, "peers,", stats.ConnectedSeeders, "seeders")
+		fmt.Println(s.BytesCompleted, "/", s.Length, "-", rate, "B/s -", s.ActivePeers, "peers,", s.Seeders, "seeders")
 	}
 }
 
