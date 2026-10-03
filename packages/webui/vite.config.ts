@@ -5,7 +5,7 @@ import solid from "vite-plugin-solid";
 export default defineConfig({
 	plugins: [solid(), checker({ typescript: true })],
 	build: {
-		outDir: "../internal/webserver/dist",
+		outDir: "../../internal/webserver/dist",
 		emptyOutDir: true,
 	},
 	server: {

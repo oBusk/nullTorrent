@@ -1,0 +1,6 @@
+# Generates TypeScript types for the SDK from the Go API types.
+# Run with `pnpm generate` (or `go generate ./...`).
+packages:
+  - path: github.com/oBusk/nullTorrent/internal/api
+    output_path: packages/sdk/src/generated/api.ts
+    indent: "\t"

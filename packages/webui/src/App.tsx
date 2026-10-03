@@ -1,11 +1,7 @@
+import { createClient, type Status } from "@nulltorrent/sdk";
 import { createSignal, onCleanup } from "solid-js";
 
-interface Status {
-	bytesCompleted: number;
-	length: number;
-	activePeers: number;
-	seeders: number;
-}
+const client = createClient();
 
 function formatMB(bytes: number) {
 	return (bytes / (1024 * 1024)).toFixed(1) + " MB";
@@ -32,11 +28,7 @@ export default function App() {
 	// can't overlap and arrive out of order.
 	async function poll() {
 		try {
-			const res = await fetch("/api/status");
-			if (!res.ok) {
-				throw new Error(`GET /api/status failed: ${res.status} ${res.statusText}`);
-			}
-			const next: Status = await res.json();
+			const next = await client.getStatus();
 
 			const now = Date.now();
 			if (lastBytes !== null) {
