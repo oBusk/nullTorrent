@@ -24,49 +24,7 @@
 		</style>
 	</head>
 	<body>
-		<h1 id="percent">0%</h1>
-		<progress id="bar" value="0" max="1"></progress>
-		<div id="stats">
-			<span id="bytes">0 / 0 MB</span>
-			<span id="peers">0 peers, 0 seeders</span>
-		</div>
-
-		<script>
-			let lastBytes = null;
-			let lastTime = null;
-
-			function formatMB(bytes) {
-				return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-			}
-
-			async function poll() {
-				const res = await fetch("/api/status");
-				const status = await res.json();
-
-				const percent =
-					status.length > 0 ? (status.bytesCompleted / status.length) * 100 : 0;
-
-				document.getElementById("percent").textContent =
-					percent.toFixed(1) + "%";
-				document.getElementById("bar").value = status.bytesCompleted;
-				document.getElementById("bar").max = status.length;
-				document.getElementById("bytes").textContent =
-					formatMB(status.bytesCompleted) + " / " + formatMB(status.length);
-				document.getElementById("peers").textContent =
-					status.activePeers + " peers, " + status.seeders + " seeders";
-
-				const now = Date.now();
-				if (lastBytes !== null) {
-					const rate =
-						(status.bytesCompleted - lastBytes) / ((now - lastTime) / 1000);
-					document.title = formatMB(rate) + "/s - Torrent Progress";
-				}
-				lastBytes = status.bytesCompleted;
-				lastTime = now;
-			}
-
-			poll();
-			setInterval(poll, 1000);
-		</script>
+		<div id="root"></div>
+		<script type="module" src="/src/index.tsx"></script>
 	</body>
 </html>
