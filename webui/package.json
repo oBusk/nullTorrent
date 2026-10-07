@@ -19,9 +19,16 @@
   "scripts": {
     "dev": "vite --open",
     "build": "vite build",
+    "typecheck": "tsc",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^8.3.2"
+    "typescript": "^6.0.3",
+    "vite": "^8.3.2",
+    "vite-plugin-checker": "^0.14.5",
+    "vite-plugin-solid": "^2.11.14"
+  },
+  "dependencies": {
+    "solid-js": "^1.9.15"
   }
 }
