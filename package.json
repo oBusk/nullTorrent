@@ -17,9 +17,11 @@
     }
   },
   "scripts": {
-    "build": "pnpm --dir webui build && go build -o nullTorrent .",
+    "generate": "go generate ./...",
+    "build": "pnpm --dir packages/webui build && go build -o nullTorrent .",
+    "typecheck": "pnpm -r typecheck",
     "start": "pnpm build && ./nullTorrent",
-    "dev": "concurrently -n web,go -c cyan,green \"pnpm --dir webui dev\" \"go run .\""
+    "dev": "concurrently -n web,go -c cyan,green \"pnpm --dir packages/webui dev\" \"go run .\""
   },
   "devDependencies": {
     "concurrently": "^10.0.5"

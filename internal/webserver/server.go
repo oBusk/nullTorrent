@@ -22,7 +22,7 @@ func Serve(t *torrent.Torrent) error {
 
 	http.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(status.Of(t))
+		json.NewEncoder(w).Encode(status.Of(t).Status)
 	})
 
 	port := ":8080"

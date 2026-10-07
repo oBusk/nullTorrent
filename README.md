@@ -32,7 +32,7 @@ If you skip it and run `go run .` on a fresh clone, the build fails with:
 internal/webserver/assets.go:5:12: pattern all:dist: no matching files found
 ```
 
-The fix is `pnpm --dir webui build`.
+The fix is `pnpm --dir packages/webui build`.
 
 ## Development
 
@@ -45,9 +45,9 @@ This starts two processes side by side:
 - Vite on <http://localhost:5173>, which opens in your browser automatically
 - The Go server on <http://localhost:8080>
 
-Do your work against **:5173**. Vite serves `webui/index.html` straight from
-source with automatic reloading, and proxies `/api` through to the Go server, so
-frontend changes appear without rebuilding or restarting anything.
+Do your work against **:5173**. Vite serves `packages/webui/index.html` straight
+from source with automatic reloading, and proxies `/api` through to the Go
+server, so frontend changes appear without rebuilding or restarting anything.
 
 Port 8080 serves the version of the interface that was compiled into the binary.
 That copy only changes when you rebuild, so use :8080 to verify a real build, not
@@ -60,8 +60,8 @@ go run .
 ```
 
 Serves the API and the embedded web interface on <http://localhost:8080>. Run
-`pnpm --dir webui build` first if you have changed anything under `webui/`,
-otherwise the previously built interface is served.
+`pnpm --dir packages/webui build` first if you have changed anything under
+`packages/webui/`, otherwise the previously built interface is served.
 
 ### Options
 
@@ -77,6 +77,19 @@ Write downloaded data to a different directory (default `./downloads`):
 go run . -data-dir custom_downloads
 ```
 
+## API types
+
+The types sent over the HTTP API live in `internal/api`. They are converted to
+TypeScript for the SDK with [tygo](https://github.com/gzuidhof/tygo), and the
+result is checked in at `packages/sdk/src/generated/api.ts`, so the frontend
+builds without a Go toolchain.
+
+After changing anything in `internal/api`, regenerate:
+
+```bash
+pnpm generate   # or: go generate ./...
+```
+
 ## Building a binary
 
 ```bash
@@ -88,12 +101,18 @@ pnpm start     # the same, then runs the binary
 
 ```
 main.go                 flag parsing and wiring
+generate.go             go:generate directive for the API types
+tygo.yaml               config for generating TypeScript from internal/api
 internal/
+  api/                  types sent over the HTTP API, the public contract
   memstorage/           in-memory torrent storage backend
   status/               torrent status shared by the API and the console output
   webserver/            HTTP API and web interface
     dist/               built web interface, embedded at compile time (generated)
-webui/                  web interface source, built with Vite
+packages/
+  sdk/                  @nulltorrent/sdk, TypeScript client for the HTTP API
+    src/generated/      types generated from internal/api (checked in)
+  webui/                web interface source, built with Vite on top of the SDK
 ```
 
 ## License

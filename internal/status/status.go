@@ -1,22 +1,26 @@
 package status
 
-import "github.com/anacrolix/torrent"
+import (
+	"github.com/anacrolix/torrent"
 
+	"github.com/oBusk/nullTorrent/internal/api"
+)
+
+// Status is the API status plus fields that are only used internally.
 type Status struct {
-	BytesCompleted int64 `json:"bytesCompleted"`
-	Length         int64 `json:"length"`
-	ActivePeers    int   `json:"activePeers"`
-	Seeders        int   `json:"seeders"`
-	BytesRead      int64 `json:"-"`
+	api.Status
+	BytesRead int64 `json:"-"`
 }
 
 func Of(t *torrent.Torrent) Status {
 	stats := t.Stats()
 	return Status{
-		BytesCompleted: t.BytesCompleted(),
-		Length:         t.Length(),
-		ActivePeers:    stats.ActivePeers,
-		Seeders:        stats.ConnectedSeeders,
-		BytesRead:      stats.BytesReadUsefulData.Int64(),
+		Status: api.Status{
+			BytesCompleted: t.BytesCompleted(),
+			Length:         t.Length(),
+			ActivePeers:    stats.ActivePeers,
+			Seeders:        stats.ConnectedSeeders,
+		},
+		BytesRead: stats.BytesReadUsefulData.Int64(),
 	}
 }

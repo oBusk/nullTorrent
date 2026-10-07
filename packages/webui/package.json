@@ -3,19 +3,6 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@12.1.0",
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "12.1.0",
-      "onFail": "download"
-    },
-    "runtime": {
-      "name": "node",
-      "version": "24.20.0",
-      "onFail": "download"
-    }
-  },
   "scripts": {
     "dev": "vite --open",
     "build": "vite build",
@@ -29,6 +16,7 @@
     "vite-plugin-solid": "^2.11.14"
   },
   "dependencies": {
+    "@nulltorrent/sdk": "workspace:*",
     "solid-js": "^1.9.15"
   }
 }

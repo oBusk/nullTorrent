@@ -2,7 +2,7 @@ configDependencies:
   "@obusk/pnpm-plugin-defaults": latest
 
 packages:
-  - "webui"
+  - "packages/*"
 
 # semver@6.3.1 is a legitimate backport published without provenance after
 # provenance-signed 7.x releases; required by @babel/core (vite-plugin-solid).
